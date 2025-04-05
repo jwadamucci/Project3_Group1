@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crop Choropleth Map</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- PapaParse -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <!-- TopoJSON & GeoJSON for countries -->
+  <script src="https://unpkg.com/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #map { height: 600px; margin-top: 20px; }
+    .controls { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Global Crop Choropleth Map</h1>
+
+  <div class="controls">
+    <label for="dataSelect">Select Data to Display:</label>
+    <select id="dataSelect">
+      <option value="yield_hg_ha">Yield (hg/ha)</option>
+      <option value="yield_t_ha">Yield (t/ha)</option>
+      <option value="rainfall_mm">Rainfall (mm)</option>
+      <option value="avg_temp_c">Temperature (°C)</option>
+      <option value="pesticide_t">Pesticide Use (t)</option>
+    </select>
+    <br><br>
+    <label for="yearSlider">Select Year: <span id="yearValue">All</span></label>
+    <input type="range" id="yearSlider" min="1990" max="2020" step="1" />
+  </div>
+
+  <div id="map"></div>
+
+  <script src="choropleth.js"></script>
+</body>
+</html>
