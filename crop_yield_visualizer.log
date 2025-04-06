@@ -1,0 +1,27 @@
+
+2025-04-06 12:11:49,219 - INFO - Starting crop yield visualization
+2025-04-06 12:11:49,220 - INFO - Base directory: /Users/GURU/Desktop/Project3_Group1
+2025-04-06 12:11:49,222 - INFO - All required files found successfully
+2025-04-06 12:11:49,223 - INFO - Loading GeoJSON data from: /Users/GURU/Desktop/Project3_Group1/custom_updated.geo.json
+2025-04-06 12:11:49,470 - INFO - Loading CSV data from: /Users/GURU/Desktop/Project3_Group1/Resources/final_crop_data.csv
+2025-04-06 12:11:49,504 - INFO - Data loaded successfully
+2025-04-06 12:11:49,505 - INFO - Processing data...
+2025-04-06 12:11:49,506 - INFO - Filtering for year: 2000
+2025-04-06 12:11:49,518 - INFO - Processed 10 max yield records
+2025-04-06 12:11:49,520 - INFO - Creating interactive map...
+2025-04-06 12:11:49,532 - INFO - Creating colormap with yield range: 11.2 to 4248.6
+2025-04-06 12:11:49,564 - INFO - Map created successfully
+2025-04-06 12:11:50,563 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html
+2025-04-06 12:27:29,802 - INFO - Starting crop yield visualization
+2025-04-06 12:27:29,803 - INFO - Base directory: /Users/GURU/Desktop/Project3_Group1
+2025-04-06 12:27:29,805 - INFO - All required files found successfully
+2025-04-06 12:27:29,806 - INFO - Loading GeoJSON data from: /Users/GURU/Desktop/Project3_Group1/custom_updated.geo.json
+2025-04-06 12:27:30,184 - INFO - Loading CSV data from: /Users/GURU/Desktop/Project3_Group1/Resources/final_crop_data.csv
+2025-04-06 12:27:30,230 - INFO - Data loaded successfully
+2025-04-06 12:27:30,231 - INFO - Processing data...
+2025-04-06 12:27:30,235 - INFO - Filtering for year: 2000
+2025-04-06 12:27:30,256 - INFO - Processed 10 max yield records
+2025-04-06 12:27:30,259 - INFO - Creating interactive map...
+2025-04-06 12:27:30,277 - INFO - Creating colormap with yield range: 11.2 to 4248.6
+2025-04-06 12:27:30,324 - INFO - Map created successfully
+2025-04-06 12:27:31,419 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html
