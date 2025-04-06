@@ -1,6 +1,15 @@
-// choropleth.js
+const map = L.map('map', {
+  center: [25, 0],
+  zoom: 2,
+  minZoom: 2,
+  maxZoom: 5,
+  maxBounds: [[-60, -180], [85, 180]],
+  maxBoundsViscosity: 1.0,
+  worldCopyJump: false,
+  zoomControl: true,
+  attributionControl: true
+});
 
-let map = L.map('map').setView([20, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
@@ -25,7 +34,6 @@ Papa.parse("final_crop_data.csv", {
       avg_temp_c: parseFloat(d.avg_temp_c),
       pesticide_t: parseFloat(d.pesticide_t)
     })).filter(d => d.region && !isNaN(d.year));
-
     drawMap();
   }
 });
@@ -36,6 +44,10 @@ function drawMap() {
   fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json")
     .then(res => res.json())
     .then(geojson => {
+      geojson.features = geojson.features.filter(
+        feature => feature.properties.name !== "Antarctica"
+      );
+
       const year = parseInt(yearSlider.value);
       const metric = dataSelect.value;
       yearValue.textContent = year;
@@ -67,7 +79,7 @@ function drawMap() {
           return {
             fillColor: val !== undefined ? getColor(val, min, max) : '#ccc',
             weight: 1,
-            color: '#fff',
+            color: '#000',
             fillOpacity: 0.8
           };
         },
@@ -77,6 +89,11 @@ function drawMap() {
           layer.bindPopup(`<strong>${region}</strong><br>${dataSelect.options[dataSelect.selectedIndex].text}: ${val ?? 'No data'}`);
         }
       }).addTo(map);
+
+      map.fitBounds(geoLayer.getBounds(), {
+        padding: [20, 20],
+        maxZoom: 4
+      });
     });
 }
 

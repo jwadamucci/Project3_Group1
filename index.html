@@ -15,9 +15,65 @@
   <script src="https://unpkg.com/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #map { height: 600px; margin-top: 20px; }
-    .controls { margin-bottom: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .map-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .map-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    #map {
+      height: 700px;
+      width: 100%;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .legend-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      height: 400px;
+      justify-content: space-between;
+    }
+
+    .legend-label {
+      margin: 0;
+    }
+
+    #legend-gradient {
+      height: 320px;
+      width: 20px;
+      background: linear-gradient(to top, #253494, #2c7fb8, #41b6c4, #a1dab4, #ffffcc);
+      margin: 0;
+    }
+
+    /* Hide embedded legend inside Leaflet map if it exists */
+    .leaflet-control .legend {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -34,10 +90,19 @@
     </select>
     <br><br>
     <label for="yearSlider">Select Year: <span id="yearValue">All</span></label>
-    <input type="range" id="yearSlider" min="1990" max="2020" step="1" />
+    <input type="range" id="yearSlider" min="1990" max="2013" step="1" />
   </div>
 
-  <div id="map"></div>
+  <div class="map-container">
+    <div class="map-wrapper">
+      <div id="map"></div>
+    </div>
+    <div class="legend-container">
+      <div class="legend-label">Low</div>
+      <div id="legend-gradient"></div>
+      <div class="legend-label">High</div>
+    </div>
+  </div>
 
   <script src="choropleth.js"></script>
 </body>
