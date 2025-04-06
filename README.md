@@ -63,7 +63,7 @@ This project bridges the gap between complex agricultural datasets and actionabl
 
 ## Repository Structure
 ```
-CROP-YIELD-VISUALIZATION
+PROJECT3_GROUP1
 ├── README.md
 ├── Resources
 │   ├── crop_yields.csv
@@ -78,9 +78,9 @@ CROP-YIELD-VISUALIZATION
 │   ├── crop.sql
 │   └── crop_data-sql.csv
 ├── Screenshot 2025-04-02 at 11.02.52 PM.png
-├── Visualizations_Gurpreet.ipynb
+├── Visualizations_Gurpreet.ipynb DATA VISUALIZATION
 ├── crop_yield_map_with_markers.html
-├── crop_yields_Gurpreet.ipynb
+├── crop_yields_Gurpreet.ipynb GATHERING & CLEANING DATA 
 ├── custom.geo.json
 └── custom_updated.geo.json
 
@@ -90,7 +90,7 @@ CROP-YIELD-VISUALIZATION
 ## Usage
 1. Navigate to the repository directory:
 ```bash
-cd Crop-Yield-Visualization
+cd PROJECT3_GROUP1
 ```
 
 2. Place the required datasets in the `Resources/` folder.
