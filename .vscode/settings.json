@@ -2,10 +2,17 @@
     "cSpell.words": [
         "Badrain",
         "basemaps",
+        "Carto",
         "choropleth",
         "dropna",
         "Geospatial",
-        "Plotly"
+        "ipynb",
+        "levelname",
+        "nunique",
+        "Plotly",
+        "spiderfy",
+        "vmax",
+        "vmin"
     ],
     "liveServer.settings.port": 5505
 }
