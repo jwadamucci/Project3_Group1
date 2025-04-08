@@ -55,7 +55,7 @@
       background: white;
       padding: 10px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-      height: 400px;
+      height: 450px;
       justify-content: space-between;
     }
 
@@ -68,6 +68,13 @@
       width: 20px;
       background: linear-gradient(to top, #253494, #2c7fb8, #41b6c4, #a1dab4, #ffffcc);
       margin: 0;
+    }
+
+    .legend-note {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #555;
     }
 
     /* Hide embedded legend inside Leaflet map if it exists */
@@ -101,6 +108,7 @@
       <div class="legend-label">Low</div>
       <div id="legend-gradient"></div>
       <div class="legend-label">High</div>
+      <div class="legend-note">Gray areas represent null or missing data.</div>
     </div>
   </div>
 
