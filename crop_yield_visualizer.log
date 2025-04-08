@@ -38,3 +38,42 @@
 2025-04-06 13:39:14,214 - INFO - Creating colormap with yield range: 11.2 to 4248.6
 2025-04-06 13:39:14,244 - INFO - Map created successfully
 2025-04-06 13:39:15,342 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html
+2025-04-07 19:44:35,605 - INFO - Starting crop yield visualization
+2025-04-07 19:44:35,607 - INFO - Base directory: /Users/GURU/Desktop/Project3_Group1
+2025-04-07 19:44:35,609 - INFO - All required files found successfully
+2025-04-07 19:44:35,611 - INFO - Loading GeoJSON data from: /Users/GURU/Desktop/Project3_Group1/custom_updated.geo.json
+2025-04-07 19:44:35,921 - INFO - Loading CSV data from: /Users/GURU/Desktop/Project3_Group1/Resources/final_crop_data.csv
+2025-04-07 19:44:35,964 - INFO - Data loaded successfully
+2025-04-07 19:44:35,965 - INFO - Processing data...
+2025-04-07 19:44:35,966 - INFO - Filtering for year: 2000
+2025-04-07 19:44:35,979 - INFO - Processed 10 max yield records
+2025-04-07 19:44:35,981 - INFO - Creating interactive map...
+2025-04-07 19:44:36,000 - INFO - Creating colormap with yield range: 11.2 to 4248.6
+2025-04-07 19:44:36,037 - INFO - Map created successfully
+2025-04-07 19:44:37,258 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html
+2025-04-07 19:47:40,435 - INFO - Starting crop yield visualization
+2025-04-07 19:47:40,436 - INFO - Base directory: /Users/GURU/Desktop/Project3_Group1
+2025-04-07 19:47:40,438 - INFO - All required files found successfully
+2025-04-07 19:47:40,440 - INFO - Loading GeoJSON data from: /Users/GURU/Desktop/Project3_Group1/custom_updated.geo.json
+2025-04-07 19:47:40,759 - INFO - Loading CSV data from: /Users/GURU/Desktop/Project3_Group1/Resources/final_crop_data.csv
+2025-04-07 19:47:40,806 - INFO - Data loaded successfully
+2025-04-07 19:47:40,808 - INFO - Processing data...
+2025-04-07 19:47:40,809 - INFO - Filtering for year: 2000
+2025-04-07 19:47:40,821 - INFO - Processed 10 max yield records
+2025-04-07 19:47:40,823 - INFO - Creating interactive map...
+2025-04-07 19:47:40,832 - INFO - Creating colormap with yield range: 11.2 to 4248.6
+2025-04-07 19:47:40,871 - INFO - Map created successfully
+2025-04-07 19:47:42,283 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html
+2025-04-07 19:48:11,496 - INFO - Starting crop yield visualization
+2025-04-07 19:48:11,498 - INFO - Base directory: /Users/GURU/Desktop/Project3_Group1
+2025-04-07 19:48:11,499 - INFO - All required files found successfully
+2025-04-07 19:48:11,500 - INFO - Loading GeoJSON data from: /Users/GURU/Desktop/Project3_Group1/custom_updated.geo.json
+2025-04-07 19:48:11,856 - INFO - Loading CSV data from: /Users/GURU/Desktop/Project3_Group1/Resources/final_crop_data.csv
+2025-04-07 19:48:11,902 - INFO - Data loaded successfully
+2025-04-07 19:48:11,903 - INFO - Processing data...
+2025-04-07 19:48:11,906 - INFO - Filtering for year: 2000
+2025-04-07 19:48:11,930 - INFO - Processed 10 max yield records
+2025-04-07 19:48:11,932 - INFO - Creating interactive map...
+2025-04-07 19:48:11,948 - INFO - Creating colormap with yield range: 11.2 to 4248.6
+2025-04-07 19:48:11,998 - INFO - Map created successfully
+2025-04-07 19:48:13,208 - INFO - Map saved successfully to: /Users/GURU/Desktop/Project3_Group1/crop_yield_map_enhanced.html

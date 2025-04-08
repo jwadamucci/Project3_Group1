@@ -6,6 +6,7 @@
         "choropleth",
         "dropna",
         "Geospatial",
+        "iloc",
         "ipynb",
         "levelname",
         "nunique",
