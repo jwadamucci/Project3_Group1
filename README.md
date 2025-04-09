@@ -96,6 +96,22 @@ cd Project3_Group1
 python dashboard.py
 ```
 
+🔐 **Data Ethics Summary**
+
+⚖️ Responsible Use of Agricultural Data:
+
+This project analyzes crop yield and environmental data across global regions. While the dataset used is anonymized and public, we take ethical considerations seriously to ensure responsible analysis and communication.
+
+✅ Ethical Considerations Addressed:
+
+- In this project, we made efforts to make sure that the dataset contains no personal or sensitive information.Regional identifiers are aggregated at the country level (e.g., “Kenya”, “Brazil”), avoiding individual-level tracking.
+
+- Data accuracy and representation: efforts were made to clean and validate the data before visualization. 
+
+- All crops and regions are treated equally in the dashoard. All regions can be accessed using the dashboard with details about all metrics. Analyses are based on available data and do not imply judgment about regional agricultural performance.
+
+- The dashboard is built for educational and analytical purposes. It aims to support better understanding of crop-environment relationships, not influence policy or markets.Visualizations in the dashboard are designed to empower users with insights, not overwhelm or mislead.
+  
 ## Resources
 * Dash Plotly Documentation
 * Folium and Dash libraries for interactive visualizations.
