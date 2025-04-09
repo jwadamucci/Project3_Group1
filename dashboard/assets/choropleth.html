@@ -1,0 +1,41 @@
+
+<html>
+<head>
+    <title>Choropleth Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { margin:0; padding:0; }
+        #map { width: 100%; height: 100vh; }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <label for="dataSelect">Metric:</label>
+        <select id="dataSelect">
+            <option value="yield_t_ha">Yield (t/ha)</option>
+            <option value="yield_hg_ha">Yield (hg/ha)</option>
+            <option value="rainfall_mm">Rainfall (mm)</option>
+            <option value="avg_temp_c">Avg Temp (°C)</option>
+            <option value="pesticide_t">Pesticide Use (t)</option>
+        </select>
+        <br><label for="yearSlider">Year:</label>
+        <input type="range" id="yearSlider" min="2000" max="2020" value="2015" step="1">
+        <span id="yearValue">2015</span>
+    </div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="choropleth.js"></script>
+</body>
+</html>
