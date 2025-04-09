@@ -67,12 +67,12 @@ project_root/
 ## Usage
 1. Clone the repository:
 ```bash
-git clone <repo_url>
+git clone <https://github.com/jwadamucci/Project3_Group1.git>
 ```
 
 2. Navigate to the repository:
 ```bash
-cd project_root
+cd Project3_Group1
 ```
 
 3. Explore the Interactive Map-Based Visualization:
