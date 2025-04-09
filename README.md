@@ -75,10 +75,7 @@ git clone <https://github.com/jwadamucci/Project3_Group1.git>
 cd Project3_Group1
 ```
 
-3. Explore the Interactive Map-Based Visualization:
-   * Open `yield_map.html` in your browser.
-
-4. Run the Statistical Insight Dashboard:
+3. Run the Statistical Insight Dashboard:
    * Set up the environment and start the Dash app:
 ```bash
 python dashboard.py
