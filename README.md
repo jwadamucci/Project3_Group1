@@ -1,150 +1,96 @@
-# Project3_Group1
-# **Crop Yield Global Visualization**
+# Crop Yield Analysis and Visualization Tools
 
-## **Overview**
-The **Crop Yield Global Visualization** project is an interactive data visualization tool focused on global agricultural metrics. By integrating crop yield and environmental data into GeoJSON files, this project provides an intuitive platform for exploring agricultural efficiency and environmental impacts through interactive maps.
+## Overview
+This repository houses a comprehensive solution for analyzing global agricultural efficiency and environmental impact. By combining GeoJSON-based spatial visualizations and statistical insights, the tools empower users to explore crop yield trends, assess environmental factors such as rainfall and temperature deviations, and uncover quantitative metrics driving agricultural performance across regions and timeframes.
 
-## **Background**
-This project bridges the gap between complex agricultural datasets and actionable insights. It visualizes crop yields, pesticide usage, rainfall, temperature deviations, and efficiency metrics to help users better understand the factors driving agricultural performance across different regions and time periods.
+## Features
 
-## **Implementation Details**
+### Interactive Map-Based Visualization
+* **Data Processing**
+   * Utilizes Python (pandas) for enriching GeoJSON files with crop yield metrics.
+   * Handles missing values, standardizes geographic data, and computes yield efficiency.
+* **Interactive Map Creation**
+   * Built with Folium to display yield efficiency through markers, choropleth layers, and tooltips.
+   * Includes basemap styles (Standard, Satellite, Terrain) and layer controls for enhanced interactivity.
+* **Environmental Impact Analysis**
+   * Visualizes the influence of temperature deviations, rainfall, and pesticide usage on yields.
 
-### **Crop Yield Data Processing**
-#### **Data Integration**
-* **Technology:** Python with `pandas`
-* **Data Source:** User-provided datasets (see `Resources` folder)
-* **Functionality:** Enriches GeoJSON files with agricultural metrics for geographic representation
+### Statistical Insight Dashboard
+* **Data Processing**
+   * Applies cleaning methods and statistical techniques to prepare data for analysis.
+   * Handles outliers, computes average yields, and calculates yearly percent changes.
+* **Statistical Analysis**
+   * Includes linear regression modeling, correlation analysis, and outlier detection.
+   * Provides coefficients and R² scores for statistical understanding.
+* **Interactive Visualizations**
+   * Dynamic filters for crops, regions, and year ranges.
+   * Chart toggles (line, bar, scatter) and downloadable filtered data.
 
-### **Interactive Map Creation**
-#### **Visualization Features**
-* **Library:** Folium
-* **Marker Representation:**
-   * Yield efficiency with size-based markers
-   * Color-coded layers for additional clarity
-* **Hover Tooltips:** Display detailed metrics dynamically
-* **Year Filter:** Allows focused exploration of specific years
-* **Choropleth Layers:** Highlight agricultural data distribution and spatial patterns
+## Implementation Details
 
-#### **Map Layers and Controls**
-* **Basemap Styles:**
-   * Standard Map
-   * Satellite View
-   * Terrain Map
-* **Legend:**
-   * Comprehensive color-coding explanations for yield efficiency and environmental factors
-* **Interactive Elements:**
-   * Detailed popups and hover-over insights for specific data points
+### Tech Stack
+* **Backend**
+   * Python with pandas, Folium, Dash, and Sklearn.
+   * Spatial data representation using GeoJSON.
+* **Visualization Tools**
+   * Folium for maps and overlays.
+   * Plotly and Dash for interactive charts and dashboards.
 
-### **Environmental Impact Analysis**
-* Visualization of temperature deviations, rainfall, and pesticide usage impacts on yields
-
-## **Features**
-
-### **Interactive Elements**
-* **Layer Controls:** Toggle between different basemap styles and data overlays
-* **Hover and Click:** Explore detailed regional information
-* **Dynamic Updates:** Filter and display data based on selected metrics and timeframes
-
-### **Visualizations**
-* **Agricultural Metrics:** Choropleth layers and dynamic markers for crop yield data
-* **Environmental Factors:** Overlay data for rainfall, temperature, and pesticide usage
-
-## **Tech Stack**
-
-### **Backend:**
-* Python
-   * Libraries: pandas, Folium, JSON
-
-### **Visualization:**
-* Folium (Interactive Maps)
-* GeoJSON (Spatial Data Representation)
-
-## **Data Sources**
-* **Crop Yield Data:** Available in `Resources/crop_yields.csv`
-* **Environmental Data:** Includes rainfall, temperature, and pesticide datasets (see `Resources` folder)
-
-## **Repository Structure**
+### Repository Structure
 
 ```
 project_root/
-├── Data_Processing/ # Data preparation workflows
-│   ├── crop_yields_Gurpreet.ipynb # [Jupyter Notebook] Main data cleaning pipeline:
-│   │   # - Handles missing values
-│   │   # - Standardizes country names
-│   │   # - Calculates yield efficiency metrics
-│   │
-│   └── yield_df.csv # [Processed Data] Output from cleaning pipeline:
-│       # - 150+ countries
-│       # - 2000-2020 temporal coverage
-│       # - 12 crop types
-│
-├── Visualizations/ # Mapping and analysis outputs
-│   ├── Visualizations_Gurpreet.ipynb # [Jupyter Notebook] Creates:
-│   │   # - Interactive Folium maps
-│   │   # - Comparative charts
-│   │   # - Statistical summaries
-│   │
-│   ├── crop_yield_map_enhanced.html # [HTML Export] Interactive map features:
-│   │   # - Layer controls
-│   │   # - Dynamic tooltips
-│   │   # - Year filtering
-│   │
-│   └── Screenshot*.png # [Image Files] Sample visualizations:
-│       # 1. Choropleth_map_2020.png
-│       # 2. Efficiency_scatterplot.png
-│       # 3. Climate_correlation.png
-│
-├── Resources/ # Original and intermediate datasets
-│   ├── crop_yields.csv # [Primary Data] Raw yield metrics:
-│   │   # - Columns: Country,Year,CropType,Yield
-│   │
-│   ├── environmental_factors.csv # [Climate Data] Contains:
-│   │   # - Temperature anomalies
-│   │   # - Precipitation levels
-│   │   # - Growing season length
-│   │
-│   ├── pesticides.csv # [Agricultural Inputs]
-│   ├── rainfall.csv # [Climate Metrics]
-│   ├── temp.csv # [Temperature Data]
-│   └── yield.csv # [Alternative Yield Format]
-│
-├── GeoJSON/ # Spatial data components
-│   ├── custom.geo.json # [Base Geography] Contains:
-│   │   # - Country boundaries
-│   │   # - Standard ISO codes
-│   │
-│   └── custom_updated.geo.json # [Enhanced Data] Merges:
-│       # - Geographic features
-│       # - Agricultural metrics
-│       # - Environmental indicators
-│
-├── SQL/ # Database management
-│   ├── crop.sql # [Schema Definition] Creates:
-│   │   # - Tables structure
-│   │   # - Indexes
-│   │   # - Relationships
-│   │
-│   └── crop_data-sql.csv # [Query Output] Exported results:
-│       # - Joined tables
-│       # - Filtered records
-│       # - Calculated fields
-│
-└── README.md # Project documentation
+├── Cleaned
+│   ├── final_crop_data.csv        # Cleaned crop yield dataset after processing, ready for visualization and analysis.
+│   └── yield_map.html             # Interactive map displaying agricultural metrics, created with Folium.
+├── crop_data_schema.sql           # SQL schema defining the structure of crop yield database tables.
+├── dashboard
+│   ├── assets
+│   │   ├── choropleth.html        # Template for generating choropleth visualizations of agricultural data.
+│   │   ├── choropleth.js          # JavaScript code for customizing the choropleth layer interactions.
+│   │   ├── custom_updated.geo.json # GeoJSON file enriched with agricultural and environmental data.
+│   │   └── world_countries.geojson # Base GeoJSON file containing geographic data for country boundaries.
+│   ├── dashboard.py               # Python script for running the interactive crop yield dashboard.
+│   ├── final_crop_data.csv        # Cleaned and formatted dataset for dashboard use.
+│   └── Visualizations_Gurpreet.ipynb # Jupyter Notebook for generating maps, charts, and statistical summaries.
+├── data_cleanup.ipynb             # Jupyter Notebook containing data cleaning workflows, including handling missing values and outliers.
+├── README.md                      # Documentation of the project, including usage instructions and features.
+└── Resources
+    ├── pesticides.csv             # Dataset of pesticide usage metrics across regions and time.
+    ├── rainfall.csv               # Dataset with rainfall data relevant to crop yield analysis.
+    ├── temp.csv                   # Temperature dataset with anomalies and deviations over time.
+    ├── yield_df.csv               # Processed yield data for integration into GeoJSON and dashboard visualizations.
+    └── yield.csv                  # Alternative yield data format used in some analyses.
+
 ```
 
-## **Usage**
-1. Navigate to the repository directory:
-   ```bash
-   cd PROJECT3_GROUP1
-   ```
-2. Place the required datasets in the `Resources/` folder.
-3. Open the `crop_yield_map_with_markers.html` file in your browser to explore the visualization.
+## Usage
+1. Clone the repository:
+```bash
+git clone <repo_url>
+```
 
-## **Credits**
+2. Navigate to the repository:
+```bash
+cd project_root
+```
 
-### **Data Sources**
-* Crop yield and environmental data provided in the `Resources` folder
+3. Explore the Interactive Map-Based Visualization:
+   * Open `yield_map.html` in your browser.
 
-### **Acknowledgments**
-* Folium and pandas for their powerful libraries
-* Microsoft Copilot for ideation and guidance
+4. Run the Statistical Insight Dashboard:
+   * Set up the environment and start the Dash app:
+```bash
+python dashboard.py
+```
+
+## Resources
+* Dash Plotly Documentation
+* Folium and Dash libraries for interactive visualizations.
+* pandas and Sklearn for data manipulation and statistical analysis.
+* GeoJSON for spatial data representation.
+
+## Credits
+* Folium and Dash for interactive visualization libraries.
+* pandas and Sklearn for data manipulation and analysis.
+* Microsoft Copilot for ideation and guidance.
