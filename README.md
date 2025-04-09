@@ -108,7 +108,7 @@ This project analyzes crop yield and environmental data across global regions. W
 
 - Data accuracy and representation: efforts were made to clean and validate the data before visualization. 
 
-- All crops and regions are treated equally in the dashoard. All regions can be accessed using the dashboard with details about all metrics. Analyses are based on available data and do not imply judgment about regional agricultural performance.
+- All crops and regions are treated equally in the dashboard. All regions can be accessed using the dashboard with details about all metrics. Analysis are based on available data and do not imply judgement about regional agricultural performance.
 
 - The dashboard is built for educational and analytical purposes. It aims to support better understanding of crop-environment relationships, not influence policy or markets.Visualizations in the dashboard are designed to empower users with insights, not overwhelm or mislead.
   
