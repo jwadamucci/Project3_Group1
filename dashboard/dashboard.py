@@ -521,6 +521,17 @@ def update_folium_map(year, crops, regions):
             'crop': 'nunique'
         }).reset_index()
         stats.columns = ['region', 'mean_yield', 'max_yield', 'crop_variety']
+
+        region_yield = dff.groupby('region')['yield_t_ha'].mean().reset_index()
+
+        # 🌍 Add average yield to GeoJSON feature properties
+        for feature in geojson_data['features']:
+            region_name = feature['properties']['name']
+            avg_yield = region_yield[region_yield['region'] == region_name]['yield_t_ha'].values
+            if len(avg_yield) > 0:
+                feature['properties']['yield_t_ha'] = round(avg_yield[0], 2)
+            else:
+                feature['properties']['yield_t_ha'] = "No data"
         
         # Create map
         m = folium.Map(
@@ -623,8 +634,9 @@ def update_folium_map(year, crops, regions):
             geojson_data,
             style_function=style_function,
             tooltip=folium.GeoJsonTooltip(
-                fields=['name'],
-                aliases=['Region:'],
+                fields=['name', 'yield_t_ha'],
+                aliases=['Region:', 'Avg Yield (t/ha):'],
+                localize=True,
                 style=(
                     "background-color: white; font-family: sans-serif; "
                     "font-size: 12px; padding: 8px; border-radius: 4px;"
