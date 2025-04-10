@@ -12,6 +12,7 @@ import dash_leaflet.express as dlx
 import json
 
 import folium
+from folium.plugins import MarkerCluster
 from io import StringIO
 import branca.colormap as cm
 from shapely.geometry import shape
@@ -102,7 +103,7 @@ app.layout = dbc.Container([
         dbc.Tab(label="\U0001F30D Regional Comparison", tab_id="tab-3"),
         dbc.Tab(label="\U0001F4CA Statistical Analysis", tab_id="tab-4"),
         dbc.Tab(label="🗺️ Choropleth Map", tab_id="tab-5"),
-        dbc.Tab(label="🗺️ Folium Yield Map", tab_id="tab-6")
+        dbc.Tab(label="🗺️ Interactive Yield Map", tab_id="tab-6")
     ], id="tabs", active_tab="tab-1", className="mb-3"),
 
     # Hidden placeholder components (to register callbacks)
@@ -266,59 +267,35 @@ def render_tabs(tab, regions, crops, years, theme):
         ]), cards
     
     elif tab == "tab-6":
-        m = generate_crop_yield_map(target_year=2000)  # Or make dynamic later
-        map_html = m.get_root().render()
-
-        legend = html.Div([
-            html.Div([
-                html.H5("Yield Legend (t/ha)", className="mb-2", style={"marginBottom": "10px"}),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#006837", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("High")
-                ]),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#31a354", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("Medium-High")
-                ]),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#78c679", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("Medium")
-                ]),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#c2e699", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("Low-Medium")
-                ]),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#ffffcc", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("Very Low")
-                ]),
-                html.Div([
-                    html.Div(style={"width": "20px", "height": "12px", "background": "#ff0000", "display": "inline-block", "marginRight": "8px"}),
-                    html.Span("No Data", style={"color": "red", "fontWeight": "bold"})
-                ])
-            ], style={
-                "background": "white",
-                "border": "1px solid #ccc",
-                "padding": "10px",
-                "borderRadius": "5px",
-                "boxShadow": "2px 2px 6px rgba(0,0,0,0.2)",
-                "fontSize": "12px",
-                "width": "180px"
-            })
-        ], style={
-            "position": "absolute",
-            "top": "100px",  # adjust as needed
-            "left": "30px",  # adjust as needed
-            "zIndex": "1000"
-        })
-
         return html.Div([
-            html.H4("Folium Map"),
+            html.H4("Interactive Yield Map", className="mb-3"),
             html.Div([
-                legend,
-                html.Iframe(srcDoc=map_html,
-                            style={"height": "700px", "width": "100%", "border": "none"})
-            ], style={"position": "relative"})  # << this wraps the map + floating items
+                dbc.Row([
+                    dbc.Col(html.Label("Select Year:"), width=2),
+                    dbc.Col(dcc.Slider(
+                        id='folium-year-slider',
+                        min=df['year'].min(),
+                        max=df['year'].max(),
+                        value=df['year'].max(),
+                        marks={str(y): str(y) for y in range(df['year'].min(), df['year'].max()+1, 5)},
+                        step=1,
+                        tooltip={"placement": "bottom", "always_visible": True}
+                    ), width=8),
+                    dbc.Col(html.Label("Filter Crops:"), width=2),
+                    dbc.Col(dcc.Dropdown(
+                        id='folium-crop-filter',
+                        options=[{'label': c, 'value': c} for c in sorted(df['crop'].unique())],
+                        multi=True,
+                        placeholder="Filter by crop (select none for all)"
+                    ), width=8)
+                ], className="mb-3"),
+                
+                dcc.Loading(
+                    id="folium-map-loading",
+                    type="circle",
+                    children=html.Div(id='folium-map-container')
+                )
+            ])
         ]), cards
 
 @app.callback(
@@ -354,60 +331,209 @@ def update_choropleth(year, metric):
 
     return {"type": "FeatureCollection", "features": features}
 
-def create_dynamic_colormap(yield_values):
-    clean_values = yield_values.dropna()
-    if len(clean_values) == 0:
-        return cm.LinearColormap(['#ffffff'], vmin=0, vmax=1)
-
-    return cm.LinearColormap(
-        colors=['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'],
-        vmin=clean_values.min(),
-        vmax=clean_values.max(),
-        caption='Average Yield (t/ha)'
-    )
-
-def generate_crop_yield_map(target_year):
-    dff = df[df['year'] == target_year].copy()
-    if 'yield_t_ha' not in dff.columns:
-        return folium.Map(location=[0, 0], zoom_start=2)
-
-    avg_yield = dff.groupby('region')['yield_t_ha'].mean().reset_index()
-    region_yield_map = dict(zip(avg_yield['region'], avg_yield['yield_t_ha']))
-
-    m = folium.Map(location=[20, 0], zoom_start=2, tiles='CartoDB Positron')
-
-    yield_series = pd.Series(region_yield_map.values())
-    colormap = create_dynamic_colormap(yield_series)
-    colormap.add_to(m)
-
-    def style_function(feature):
-        region = feature['properties']['name']
-        value = region_yield_map.get(region)
-        return {
-            'fillColor': colormap(value) if value else '#ff0000',
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.7
-        }
-
-    # Inject yield values into GeoJSON properties for tooltips
-    for feature in geojson_data["features"]:
-        region = feature["properties"]["name"]
-        feature["properties"]["yield_t_ha"] = region_yield_map.get(region)
-
-    folium.GeoJson(
-        geojson_data,
-        style_function=style_function,
-        tooltip=folium.GeoJsonTooltip(
-            fields=['name', 'yield_t_ha'],
-            aliases=['Region:', 'Avg Yield (t/ha):'],
-            localize=True,
-            sticky=True,
-            labels=True
+@app.callback(
+    Output('folium-map-container', 'children'),
+    [Input('folium-year-slider', 'value'),
+     Input('folium-crop-filter', 'value'),
+     Input('region-dropdown', 'value')]
+)
+def update_folium_map(year, crops, regions):
+    dff = df.copy()
+    
+    # Apply filters
+    dff = dff[dff['year'] == year]
+    if crops:
+        dff = dff[dff['crop'].isin(crops)]
+    if regions:
+        dff = dff[dff['region'].isin(regions)]
+    
+    try:
+        # Process data
+        max_yield = dff.loc[dff.groupby('crop')['yield_t_ha'].idxmax()]
+        
+        stats = dff.groupby('region').agg({
+            'yield_t_ha': ['mean', 'max'],
+            'crop': 'nunique'
+        }).reset_index()
+        stats.columns = ['region', 'mean_yield', 'max_yield', 'crop_variety']
+        
+        # Create map
+        m = folium.Map(
+            location=[20, 0],
+            zoom_start=2,
+            tiles='CartoDB Positron',
+            min_zoom=2,
+            max_bounds=True,
+            control_scale=True
         )
-    ).add_to(m)
-
-    return m
+        
+        # Add title
+        title_html = """
+            <h3 align="center" style="font-size:16px; font-weight: bold;">
+                Global Crop Yield Visualizer<br>
+                <span style="font-size:12px; font-weight: normal;">Red regions indicate missing data</span>
+            </h3>
+        """
+        m.get_root().html.add_child(folium.Element(title_html))
+        
+        # Create colormap
+        region_yield = dff.groupby('region')['yield_t_ha'].mean().reset_index()
+        colormap = cm.LinearColormap(
+            colors=['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'],
+            vmin=region_yield['yield_t_ha'].min(),
+            vmax=region_yield['yield_t_ha'].max(),
+            caption='Average Yield (t/ha)'
+        )
+        colormap.add_to(m)
+        
+        # Custom legend
+        legend_html = f"""
+        <div style="
+            position: fixed; 
+            bottom: 50px;
+            left: 50px;
+            width: 180px;
+            height: 250px;
+            background-color: white;
+            border: 2px solid grey;
+            z-index: 9999;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+            font-family: sans-serif;
+        ">
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                Yield Legend (t/ha)
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #006837; margin-right: 8px; border: 1px solid #555;"></div>
+                <div>High: >{colormap.vmax*0.75:.1f}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #31a354; margin-right: 8px; border: 1px solid #555;"></div>
+                <div>Medium-High: {colormap.vmax*0.5:.1f}-{colormap.vmax*0.75:.1f}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #78c679; margin-right: 8px; border: 1px solid #555;"></div>
+                <div>Medium: {colormap.vmax*0.25:.1f}-{colormap.vmax*0.5:.1f}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #c2e699; margin-right: 8px; border: 1px solid #555;"></div>
+                <div>Low-Medium: {colormap.vmin:.1f}-{colormap.vmax*0.25:.1f}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #ffffcc; margin-right: 8px; border: 1px solid #555;"></div>
+                <div>Very Low: <{colormap.vmin:.1f}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin: 6px 0;">
+                <div style="width: 20px; height: 12px; background: #ff0000; margin-right: 8px; border: 1px solid #555;"></div>
+                <div><b>No Data Available</b></div>
+            </div>
+        </div>
+        """
+        m.get_root().html.add_child(folium.Element(legend_html))
+        
+        # Style function
+        def style_function(feature):
+            region = feature['properties']['name']
+            yield_value = region_yield[region_yield['region'] == region]['yield_t_ha'].values
+            if len(yield_value) > 0:
+                return {
+                    'fillColor': colormap(yield_value[0]),
+                    'color': '#555555',
+                    'weight': 1,
+                    'fillOpacity': 0.7
+                }
+            return {
+                'fillColor': '#ff0000',
+                'color': '#555555',
+                'weight': 1,
+                'fillOpacity': 0.7,
+                'dashArray': '5, 5'
+            }
+        
+        # Add GeoJSON layer
+        folium.GeoJson(
+            geojson_data,
+            style_function=style_function,
+            tooltip=folium.GeoJsonTooltip(
+                fields=['name'],
+                aliases=['Region:'],
+                style=(
+                    "background-color: white; font-family: sans-serif; "
+                    "font-size: 12px; padding: 8px; border-radius: 4px;"
+                    "box-shadow: 2px 2px 4px rgba(0,0,0,0.2);"
+                ),
+                sticky=True
+            ),
+            name='Yield Distribution'
+        ).add_to(m)
+        
+        # Add MarkerCluster for top yields
+        marker_cluster = MarkerCluster(name="Top Yields by Crop").add_to(m)
+        
+        # Add markers for max yields
+        for _, row in max_yield.iterrows():
+            region = row['region']
+            crop = row['crop']
+            yield_value = row['yield_t_ha']
+            year = row['year']
+            
+            feature = next(
+                (f for f in geojson_data['features'] 
+                 if f['properties'].get('name') == region), None
+            )
+            
+            if feature:
+                try:
+                    geom = shape(feature['geometry'])
+                    centroid = geom.centroid
+                    region_stat = stats[stats['region'] == region].iloc[0]
+                    
+                    popup_content = f"""
+                    <div style="width: 220px; font-family: sans-serif;">
+                        <h4 style="margin: 0 0 5px 0; color: #2b8cbe; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            {region}
+                        </h4>
+                        <p style="margin: 5px 0;"><b>Top Crop:</b> {crop}</p>
+                        <p style="margin: 5px 0;"><b>Record Yield:</b> {yield_value:.1f} t/ha ({year})</p>
+                        <p style="margin: 5px 0;"><b>Avg Yield:</b> {region_stat['mean_yield']:.1f} t/ha</p>
+                        <p style="margin: 5px 0;"><b>Crops Grown:</b> {region_stat['crop_variety']}</p>
+                    </div>
+                    """
+                    
+                    folium.Marker(
+                        location=[centroid.y, centroid.x],
+                        popup=folium.Popup(popup_content, max_width=250),
+                        icon=folium.Icon(
+                            color='green',
+                            icon='leaf',
+                            prefix='fa',
+                            icon_color='white'
+                        ),
+                        tooltip=f"{crop}: {yield_value:.1f} t/ha"
+                    ).add_to(marker_cluster)
+                except Exception as e:
+                    print(f"Error processing {region}: {str(e)}")
+        
+        # Add layer control
+        folium.LayerControl(position='topright', collapsed=False).add_to(m)
+        
+        # Add Font Awesome
+        m.get_root().header.add_child(folium.Element(
+            '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">'
+        ))
+        
+        # Convert to HTML
+        map_html = m.get_root().render()
+        return html.Iframe(
+            srcDoc=map_html,
+            style={'width': '100%', 'height': '700px', 'border': 'none'}
+        )
+    
+    except Exception as e:
+        return html.Div(f"Error generating map: {str(e)}", className="text-danger")
 
 # Run
 if __name__ == '__main__':
