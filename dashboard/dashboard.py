@@ -102,7 +102,8 @@ app.layout = dbc.Container([
         dbc.Tab(label="\U0001F30D Regional Comparison", tab_id="tab-3"),
         dbc.Tab(label="\U0001F4CA Statistical Analysis", tab_id="tab-4"),
         dbc.Tab(label="🗺️ Choropleth Map", tab_id="tab-5"),
-        dbc.Tab(label="🗺️ Interactive Yield Map", tab_id="tab-6")
+        dbc.Tab(label="🗺️ Interactive Yield Map", tab_id="tab-6"),
+        dbc.Tab(label="🗺️ Crop Yield Over Time Map", tab_id="tab-7")
     ], id="tabs", active_tab="tab-1", className="mb-3"),
 
     # Hidden placeholder components (to register callbacks)
@@ -244,26 +245,32 @@ def render_tabs(tab, regions, crops, years, theme):
         ]), cards
     
     elif tab == "tab-5":
+        
         return html.Div([
-            html.Div([
-                html.Label("Select Metric:"),
-                dcc.Dropdown(
-                    id="metric-dropdown",
-                    options=[{"label": m, "value": m} for m in ['yield_t_ha', 'rainfall_mm', 'avg_temp_c', 'pesticide_t']],
-                    value="yield_t_ha", clearable=False, style={"width": "300px"}
-                ),
-                html.Br(),
-                html.Label("Select Year:"),
-                dcc.Slider(id="year-slider", min=df['year'].min(), max=df['year'].max(),
-                           value=df['year'].max(), step=1,
-                           marks={str(y): str(y) for y in range(df['year'].min(), df['year'].max()+1, 5)},
-                           tooltip={"placement": "bottom", "always_visible": True})
-            ], className="mb-3"),
-            dl.Map(center=[10, 0], zoom=2, children=[
-                dl.TileLayer(),
-                dl.GeoJSON(id="geojson-layer", zoomToBounds=True, hoverStyle={"weight": 3, "color": "blue"})
-            ], style={"height": "600px", "width": "100%"})
-        ]), cards
+        html.Div([
+            html.Label("Select Metric:"),
+            dcc.Dropdown(
+                id="metric-dropdown",
+                options=[{"label": m, "value": m} for m in ['rainfall_mm', 'avg_temp_c', 'pesticide_t']],
+                value="rainfall_mm", 
+                clearable=False, style={"width": "300px"}
+            ),
+            html.Br(),
+            html.Label("Select Year:"),
+            
+            dcc.Slider(
+                id="year-slider",
+                min=df['year'].min(),
+                max=df['year'].max(),
+                value=df['year'].max(),  # default selected year
+                step=1,
+                marks={str(y): str(y) for y in range(df['year'].min(), df['year'].max() + 1, 5)},
+                tooltip={"placement": "bottom", "always_visible": True}
+            )
+
+        ], className="mb-3"),
+        html.Iframe(id="folium-map", style={"height": "600px", "width": "100%", "border": "none"})
+    ]), cards
     
     elif tab == "tab-6":
         return html.Div([
@@ -296,39 +303,198 @@ def render_tabs(tab, regions, crops, years, theme):
                 )
             ])
         ]), cards
+    
+    elif tab == "tab-7":
+        
+        # Use fallback values if inputs are missing
+        selected_crops = crops if crops else df['crop'].unique()
+        min_year = df['year'].min()
+        max_year = df['year'].max()
+        year_marks = {str(year): str(year) for year in range(min_year, max_year + 1, 5)}
+
+        return html.Div([
+            html.H1("Crop Yield by Country Over Time 🚀", style={"textAlign": "center"}),
+
+            # Top filters
+            html.Div([
+                html.Div([
+                    html.Label("Select Crop:"),
+                    dcc.Dropdown(
+                        id='crop-dropdown-tab7',  # <-- unique ID
+                        options=[{'label': crop, 'value': crop} for crop in selected_crops],
+                        value=selected_crops[0] if isinstance(selected_crops, (list, np.ndarray)) else selected_crops,
+                        clearable=False
+                    ),
+                ], style={"width": "20%", "padding": "10px"}),
+
+                html.Div([
+                    html.Label("Select Year:"),
+                    dcc.Slider(
+                        id='year-slider-tab7',  # <-- unique ID
+                        min=min_year,
+                        max=max_year,
+                        step=1,
+                        value=min_year,
+                        marks=year_marks,
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    ),
+                ], style={"width": "75%", "padding": "10px"})
+            ], style={
+                "display": "flex",
+                "width": "100%",
+                "alignItems": "center",
+                "justifyContent": "space-between"
+            }),
+
+            # Play/Pause button
+            html.Div([
+                html.Button("Pause Timeline", id="play-pause-btn", n_clicks=0, style={
+                    "width": "100%",
+                    "padding": "5px"
+                })
+            ], style={
+                "padding": "5px",
+                "margin": "0 auto",
+                "width": "20%",
+                "textAlign": "center"
+            }),
+
+            # Map display
+            dcc.Graph(id='yield-map-tab7', style={"height": "650px"}),
+
+            # Animation tools
+            dcc.Interval(
+                id='year-interval-tab7',
+                interval=1000,
+                n_intervals=0,
+                disabled=False
+            ),
+            dcc.Store(id='current-year-tab7', data=min_year)
+        ]), cards
+
+# --- Tab 5 Folium Choropleth Functions & Callback Start ---
+def create_colormap_tab5(values):
+    clean_values = values.dropna()
+    if len(clean_values) == 0:
+        return cm.LinearColormap(['#ffffff', '#ffffff'], vmin=0, vmax=1)
+
+    # Plasma-style hex codes (manually extracted from matplotlib plasma)
+    plasma_colors = [
+        "#0d0887", "#6a00a8", "#b12a90", "#e16462",
+        "#fca636", "#f0f921"
+    ]
+
+    return cm.LinearColormap(plasma_colors, vmin=clean_values.min(), vmax=clean_values.max())
+
+def generate_tab5_folium_map(df, metric, target_year):
+    dff = df[df['year'] == target_year].copy()
+    avg_values = dff.groupby('region')[metric].mean().reset_index()
+    region_value_map = dict(zip(avg_values['region'], avg_values[metric]))
+
+    m = folium.Map(location=[20, 0], zoom_start=2, tiles='CartoDB Positron')
+    value_series = pd.Series(region_value_map.values())
+    colormap = create_colormap_tab5(value_series)
+    colormap.caption = f"Average {metric.replace('_', ' ').title()}"
+    colormap.add_to(m)
+
+    def style_function(feature):
+        region = feature['properties']['name']
+        value = region_value_map.get(region)
+        return {
+            'fillColor': colormap(value) if value is not None else '#d3d3d3',
+            'color': 'black',
+            'weight': 1,
+            'fillOpacity': 0.7
+        }
+
+    for feature in geojson_data["features"]:
+        region = feature["properties"]["name"]
+        feature["properties"][metric] = region_value_map.get(region)
+
+    folium.GeoJson(
+        geojson_data,
+        style_function=style_function,
+        tooltip=folium.GeoJsonTooltip(
+            fields=['name', metric],
+            aliases=['Region:', f'{metric}:'],
+            localize=True,
+            sticky=True,
+            labels=True
+        )
+    ).add_to(m)
+
+    return m
+@app.callback(
+    Output("folium-map", "srcDoc"),
+    [Input("metric-dropdown", "value"),
+     Input("year-slider", "value")]
+)
+def update_tab5_folium_map(metric, year):
+    m = generate_tab5_folium_map(df, metric=metric, target_year=year)
+    return m.get_root().render()
+# --- Tab 5 Folium Choropleth Functions & Callback End ---
 
 @app.callback(
-    Output("geojson-layer", "data"),
-    [Input("year-slider", "value"), Input("metric-dropdown", "value")]
+    Output('year-interval-tab7', 'disabled'),
+    Output('play-pause-btn', 'children'),
+    Input('play-pause-btn', 'n_clicks'),
+    prevent_initial_call=True
 )
-def update_choropleth(year, metric):
-    dff = df[df['year'] == year]
-    region_metric = dff.groupby("region")[metric].mean().dropna()
-    min_val, max_val = region_metric.min(), region_metric.max()
+def toggle_animation(n_clicks):
+    # Toggle logic: even clicks = play, odd = pause
+    paused = n_clicks % 2 != 0
+    button_text = "Play Timeline" if paused else "Pause Timeline"
+    return paused, button_text
 
-    def get_color(val):
-        if pd.isna(val): return "#ccc"
-        pct = (val - min_val) / (max_val - min_val) if max_val > min_val else 0
-        return (
-            "#ffffcc" if pct < 0.2 else
-            "#a1dab4" if pct < 0.4 else
-            "#41b6c4" if pct < 0.6 else
-            "#2c7fb8" if pct < 0.8 else
-            "#253494"
-        )
+## begin add-ons (along with Interval and Store) teh callback and update for the slider
+@app.callback(
+    Output('year-slider-tab7', 'value'),
+    Output('current-year-tab7', 'data'),
+    Input('year-interval-tab7', 'n_intervals'),
+    Input('crop-dropdown-tab7', 'value'),
+    State('current-year-tab7', 'data')
+)
+def update_year_slider(n_intervals, selected_crop, current_year):
+    # Get sorted list of years for the selected crop
+    years = sorted(df[df['crop'] == selected_crop]['year'].unique())
 
-    features = []
-    for feature in geojson_data["features"]:
-        name = feature["properties"]["name"]
-        val = region_metric.get(name)
-        color = get_color(val)
-        feature["properties"]["style"] = {
-            "fillColor": color, "color": "black", "weight": 1, "fillOpacity": 0.8
-        }
-        feature["properties"]["popup"] = f"{name}<br>{metric}: {val:.2f}" if val else f"{name}: No data"
-        features.append(feature)
+    if not years:
+        return dash.no_update, dash.no_update
 
-    return {"type": "FeatureCollection", "features": features}
+    # Loop back to the start when at the end
+    try:
+        next_index = (years.index(current_year) + 1) % len(years)
+    except ValueError:
+        next_index = 0
+
+    next_year = years[next_index]
+    return next_year, next_year
+
+@app.callback(
+    Output('yield-map-tab7', 'figure'),
+    Input('crop-dropdown-tab7', 'value'),
+    Input('year-slider-tab7', 'value')
+)
+def update_map(selected_crop, selected_year):
+    filtered_df = df[(df["crop"] == selected_crop) & (df["year"] == selected_year)]
+
+    fig = px.choropleth(
+        filtered_df,
+        locations="region",
+        locationmode="country names",
+        color="yield_hg_ha",
+        hover_name="region",
+        color_continuous_scale="YlGnBu",
+        labels={"Crop_Yield": "Yield (hg/ha)"},
+        title=f"{selected_crop} Yield in {selected_year}"
+    )
+
+    fig.update_layout(
+        geo=dict(showframe=False, showcoastlines=False),
+        coloraxis_colorbar=dict(title="Yield (hg/ha)")
+    )
+
+    return fig
 
 @app.callback(
     Output('folium-map-container', 'children'),
