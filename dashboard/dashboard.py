@@ -10,7 +10,6 @@ import dash_bootstrap_components as dbc
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
 import json
-
 import folium
 from folium.plugins import MarkerCluster
 from io import StringIO
