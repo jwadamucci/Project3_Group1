@@ -60,7 +60,13 @@ Whether you're analyzing the relationship between rainfall and crop yield or ide
 
 <img width="1655" alt="Screenshot 2025-04-10 at 7 54 26 PM" src="https://github.com/user-attachments/assets/16eedeeb-fab1-4980-9ff9-887f8d23ebc8" />
 
+<img width="1655" alt="Screenshot 2025-04-10 at 8 09 31 PM" src="https://github.com/user-attachments/assets/7dcd3422-8af0-4704-8f51-dd0478aabf91" />
+
 <img width="1655" alt="Screenshot 2025-04-10 at 7 55 26 PM" src="https://github.com/user-attachments/assets/b4e26599-a2f4-4818-bfbb-9ba21b795eed" />
+
+<img width="1655" alt="Screenshot 2025-04-10 at 8 10 14 PM" src="https://github.com/user-attachments/assets/02825c0b-a12d-45ab-b6d3-556d74513ff3" />
+
+
 
 
 ### Repository Structure
