@@ -50,6 +50,18 @@ Whether you're analyzing the relationship between rainfall and crop yield or ide
 * **Visualization Tools**
    * Folium for maps and overlays.
    * Plotly and Dash for interactive charts and dashboards.
+### Screeshots of few Visualization
+
+<img width="1655" alt="Screenshot 2025-04-10 at 7 52 31 PM" src="https://github.com/user-attachments/assets/4c4d8402-c4fe-4292-bb8d-a122a6335d15" />
+
+<img width="1655" alt="Screenshot 2025-04-10 at 7 53 05 PM" src="https://github.com/user-attachments/assets/8afbe10c-6057-4d67-966d-98498df1dfa8" />
+
+<img width="1655" alt="Screenshot 2025-04-10 at 7 53 41 PM" src="https://github.com/user-attachments/assets/93acd589-280c-4edd-be90-01503d62cef0" />
+
+<img width="1655" alt="Screenshot 2025-04-10 at 7 54 26 PM" src="https://github.com/user-attachments/assets/16eedeeb-fab1-4980-9ff9-887f8d23ebc8" />
+
+<img width="1655" alt="Screenshot 2025-04-10 at 7 55 26 PM" src="https://github.com/user-attachments/assets/b4e26599-a2f4-4818-bfbb-9ba21b795eed" />
+
 
 ### Repository Structure
 
